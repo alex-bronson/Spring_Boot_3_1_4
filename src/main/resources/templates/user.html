@@ -4,8 +4,12 @@
     <title>Spring Security Example</title>
 </head>
 <body>
-<h1>User, welcome spring boot security page!</h1>
-
+<h1> User, welcome spring boot security page!</h1>
+<br><br>
+It's information about you:
+<div th:text="${userInform}"></div>
+<br><br>
+<a href="/logout">Logout</a>
 
 </body>
 </html>
