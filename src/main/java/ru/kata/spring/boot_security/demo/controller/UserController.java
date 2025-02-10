@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.MyUserService;
 
@@ -16,58 +13,59 @@ import java.util.List;
 @Controller
 public class UserController {
 
-
     private final MyUserService myUserService;
 
     @Autowired
-    public UserController(MyUserService userService) {
-        this.myUserService = userService;
+    public UserController(MyUserService myUserService) {
+        this.myUserService = myUserService;
     }
 
-    @GetMapping("/users-list")
+    @GetMapping("/admin/users-list")
     public String showAllUsers(Model model) {
         List<User> allUsers = myUserService.findAll();
         model.addAttribute("users", allUsers);
         return "users-list";
     }
-    @GetMapping("/addUser")
+
+    @GetMapping("/admin/addUser")
     public String addNewUser(Model model) {
         model.addAttribute("user", new User());
         return "create-user";
     }
 
-    @PostMapping("/saveUser")
+    @PostMapping("/admin/saveUser")
     public String saveUser(@ModelAttribute("user") User user) {
         myUserService.save(user);
-        return "redirect:/users-list";
+        return "redirect:/admin/users-list";
     }
 
-    @GetMapping("/updateUser")
+    @GetMapping("/admin/updateUser")
     public String updateUser(@RequestParam("id") int id, Model model) {
         model.addAttribute("user", myUserService.findById(id));
         return "update-user";
     }
 
-    @PostMapping("/saveUpdatedUser")
+    @PostMapping("/admin/saveUpdatedUser")
     public String saveUpdatedUser(@ModelAttribute("user") User user) {
         myUserService.save(user);
-        return "redirect:/users-list";
+        return "redirect:/admin/users-list";
     }
-    @PostMapping("/deleteUser")
-    public String deleteUser(@RequestParam("id") int id){
+
+    @PostMapping("/admin/deleteUser")
+    public String deleteUser(@RequestParam("id") int id) {
         myUserService.deleteById(id);
-        return "redirect:/users-list";
+        return "redirect:/admin/users-list";
     }
 
     @GetMapping("/user")
-    public String showUserPage(Model model, Authentication authentication){
+    public String showUserPage(Model model, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        model.addAttribute("userInform",user.toString());
+        model.addAttribute("userInform", user);
         return "user";
     }
 
     @GetMapping("/admin")
-    public String showUsers(Model model) {
+    public String showAdminPage(Model model) {
         List<User> allUsers = myUserService.findAll();
         model.addAttribute("allUsers", allUsers);
         return "admin";
