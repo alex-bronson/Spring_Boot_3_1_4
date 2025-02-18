@@ -1,46 +1,91 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org/" lang="en">
+
 <head>
-    <title>Users List</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Add new User</title>
+    <style>
+        .bs .row>.col,
+        .bs .row>[class^="col-"] {
+            padding-top: .75rem;
+            padding-bottom: .30rem;
+        }
+    </style>
 </head>
 <body>
-<h1>List of Users</h1>
-
-<!-- Таблица пользователей -->
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Surname</th>
-        <th>Salary</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- Перебор списка пользователей -->
-    <tr th:each="user : ${users}">
-        <td th:text="${user.getId()}"></td>
-        <td th:text="${user.getName()}"></td>
-        <td th:text="${user.getSurname()}"></td>
-        <td th:text="${user.getSalary()}"></td>
-        <td>
-            <form th:action="@{/updateUser}" method="GET" style="display:inline;">
-                <input type="hidden" name="id" th:value="${user.getId()}"/>
-                <button type="submit">Update</button>
-            </form>
-            <form th:action="@{/deleteUser}" method="POST" style="display:inline;">
-                <input type="hidden" name="id" th:value="${user.getId()}"/>
-                <button type="submit">Delete</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
-<form th:action="@{/addUser}" method="GET">
-    <button type="submit">Add User</button>
-</form>
-
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="/admin">
+        <span th:text="${authUser.getEmail()}"></span>
+        with roles:
+        <span th:each="role : ${authUser.getRoles()}" th:text="${role.getAuthority().replace('ROLE_', '') + ' '}"></span>
+    </a>
+    <div class="navbar navbar-dark bg-dark shadow-sm d-flex justify-content-end">
+        <a href="/logout" class="navbar-brand d-flex align-items-center">
+            <strong>Logout</strong>
+        </a>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav class="nav flex-column">
+                <a class="nav-link active" href="/admin">Admin</a>
+                <a class="nav-link" href="/user">User</a>
+            </nav>
+        </div>
+        <div class="col-md-10 bg-light">
+            <h1>Admin panel</h1>
+            <br>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link " href="/admin">Users table</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/addNewUser">New User</a>
+                </li>
+            </ul>
+            <h5 class="font-weight-bold mt-4">Add new User</h5>
+            <div class="container text-center">
+                <form th:action="@{/saveNewUser}" th:object="${user}" method="post">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" class="form-control" th:field="*{firstName}" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" class="form-control" th:field="*{lastName}" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" class="form-control" th:field="*{age}" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" th:field="*{email}" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" class="form-control" th:field="*{password}" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Roles</label>
+                        <select multiple class="form-control" th:field="*{roles}">
+                            <option value="1">ADMIN</option>
+                            <option value="2">USER</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">Add User</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>
